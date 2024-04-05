@@ -1,0 +1,8 @@
+[package]
+name = "shouxtech/observers"
+description = "Observers to help simplify some specific event handling"
+version = "0.0.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
