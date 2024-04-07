@@ -14,10 +14,14 @@ return function(callback: (char: Model) -> (() -> ()))
         local characterRemovingConnection = player.CharacterRemoving:Connect(function()
             if cleanFunc then
                 cleanFunc();
+                cleanFunc = nil;
             end;
         end);
 
         return function()
+            if cleanFunc then
+                task.spawn(cleanFunc);
+            end;
             characterAddedConnection:Disconnect();
             characterRemovingConnection:Disconnect();
         end;

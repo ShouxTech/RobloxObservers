@@ -22,6 +22,9 @@ return function(callback: (player: Player) -> (() -> ()))
     end));
 
     return function()
+        for _, cleanFunc in cleanFuncs do
+            task.spawn(cleanFunc);
+        end;
         for _, connection in connections do
             connection:Disconnect();
         end;
