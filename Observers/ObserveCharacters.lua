@@ -1,15 +1,17 @@
 local ObservePlayers = require(script.Parent.ObservePlayers);
 
-return function(callback: (char: Model) -> (() -> ()))
+return function(callback: (char: Model, player: Player) -> (() -> ()))
     local stopObservingPlayers = ObservePlayers(function(player)
         local cleanFunc: (() -> ())?;
 
         if player.Character then
-            cleanFunc = callback(player.Character);
+            task.spawn(function()
+                cleanFunc = callback(player.Character, player);
+            end);
         end;
 
         local characterAddedConnection = player.CharacterAdded:Connect(function(char)
-            cleanFunc = callback(char);
+            cleanFunc = callback(char, player);
         end);
         local characterRemovingConnection = player.CharacterRemoving:Connect(function()
             if cleanFunc then
