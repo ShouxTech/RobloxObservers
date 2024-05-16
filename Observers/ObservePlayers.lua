@@ -1,6 +1,6 @@
 local Players = game:GetService('Players');
 
-return function(callback: (player: Player) -> (() -> ()))
+return function(callback: (player: Player) -> (() -> ())?)
     local cleanFuncs: {[Player]: () -> ()} = {};
 
     for _, player in Players:GetPlayers() do
