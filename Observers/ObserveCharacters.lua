@@ -10,14 +10,21 @@ return function(callback: (char: Model, player: Player) -> (() -> ())?)
             end);
         end;
 
+        local characterRemovingConnection;
         local characterAddedConnection = player.CharacterAdded:Connect(function(char)
+            characterRemovingConnection = char.AncestryChanged:Connect(function(_, parent)
+                if parent then return; end;
+
+                characterRemovingConnection:Disconnect();
+                characterRemovingConnection = nil;
+
+                if cleanFunc then
+                    cleanFunc();
+                    cleanFunc = nil;
+                end;
+            end);
+
             cleanFunc = callback(char, player);
-        end);
-        local characterRemovingConnection = player.CharacterRemoving:Connect(function()
-            if cleanFunc then
-                cleanFunc();
-                cleanFunc = nil;
-            end;
         end);
 
         return function()
@@ -25,7 +32,9 @@ return function(callback: (char: Model, player: Player) -> (() -> ())?)
                 task.spawn(cleanFunc);
             end;
             characterAddedConnection:Disconnect();
-            characterRemovingConnection:Disconnect();
+            if characterRemovingConnection then
+                characterRemovingConnection:Disconnect();
+            end;
         end;
     end);
 
