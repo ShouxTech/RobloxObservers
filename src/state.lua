@@ -1,13 +1,13 @@
 return function(initialValue: any)
     local value = initialValue;
 
-    local observers = {};
+    local observers: { (value: any) -> () } = {};
 
     return {
-        Get = function()
+        get = function()
             return value;
         end,
-        Set = function(newValue: any)
+        set = function(newValue: any)
             if newValue == value then return; end;
 
             value = newValue;

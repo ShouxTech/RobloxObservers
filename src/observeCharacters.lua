@@ -1,7 +1,7 @@
-local ObservePlayers = require(script.Parent.ObservePlayers);
+local observePlayers = require(script.Parent.observePlayers);
 
 return function(callback: (char: Model, player: Player) -> (() -> ())?)
-    local stopObservingPlayers = ObservePlayers(function(player)
+    local stopObservingPlayers = observePlayers(function(player)
         local cleanFunc: (() -> ())?;
 
         if player.Character then
