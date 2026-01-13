@@ -1,22 +1,31 @@
 local Players = game:GetService('Players');
 
 return function(callback: (player: Player) -> (() -> ())?)
-    local cleanFuncs: {[Player]: () -> ()} = {};
+    local cleanFuncs: { [Player]: () -> () } = {};
 
-    for _, player in Players:GetPlayers() do
-        task.spawn(function()
-            cleanFuncs[player] = callback(player);
-        end);
+    local function handlePlayer(player: Player)
+        local cleanup = callback(player);
+        if not cleanup then return; end;
+
+        if not player.Parent then -- Player left while callback was running.
+            cleanup(); 
+            return;
+        end;
+
+        cleanFuncs[player] = cleanup;
     end;
 
-    local connections: {RBXScriptConnection} = {};
-    table.insert(connections, Players.PlayerAdded:Connect(function(player)
-        cleanFuncs[player] = callback(player);
-    end));
+    for _, player in Players:GetPlayers() do
+        task.spawn(handlePlayer, player);
+    end;
+
+    local connections: { RBXScriptConnection } = {};
+    
+    table.insert(connections, Players.PlayerAdded:Connect(handlePlayer));
     table.insert(connections, Players.PlayerRemoving:Connect(function(player)
-        local cleanFunc = cleanFuncs[player]
+        local cleanFunc = cleanFuncs[player];
         if cleanFunc then
-            cleanFuncs[player] = nil; -- In case cleanFunc yields or errors, remove the table key first.
+            cleanFuncs[player] = nil;
             cleanFunc();
         end;
     end));
