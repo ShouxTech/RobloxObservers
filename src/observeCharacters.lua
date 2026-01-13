@@ -30,9 +30,7 @@ return function(callback: (char: Model, player: Player) -> (() -> ())?)
                 task.spawn(cleanFunc);
             end;
             characterAddedConnection:Disconnect();
-            if characterRemovingConnection then
-                characterRemovingConnection:Disconnect();
-            end;
+            characterRemovingConnection:Disconnect();
         end;
     end);
 
