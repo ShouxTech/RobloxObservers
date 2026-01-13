@@ -10,22 +10,20 @@ return function(callback: (char: Model, player: Player) -> (() -> ())?)
             end);
         end;
 
-        local characterRemovingConnection;
-        local characterAddedConnection = player.CharacterAdded:Connect(function(char)
-            characterRemovingConnection = char.AncestryChanged:Connect(function(_, parent)
-                if parent then return; end;
+        local characterRemovingConnection = player.CharacterRemoving:Connect(function()
+			if cleanFunc then
+				cleanFunc();
+				cleanFunc = nil;
+			end;
+		end);
+		local characterAddedConnection = player.CharacterAdded:Connect(function(char)
+			if cleanFunc then
+				cleanFunc();
+				cleanFunc = nil;
+			end;
 
-                characterRemovingConnection:Disconnect();
-                characterRemovingConnection = nil;
-
-                if cleanFunc then
-                    cleanFunc();
-                    cleanFunc = nil;
-                end;
-            end);
-
-            cleanFunc = callback(char, player);
-        end);
+			cleanFunc = callback(char, player);
+		end);
 
         return function()
             if cleanFunc then
