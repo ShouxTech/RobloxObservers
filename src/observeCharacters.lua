@@ -1,7 +1,9 @@
 local observePlayers = require(script.Parent.observePlayers);
 
-return function(callback: (char: Model, player: Player) -> (() -> ())?)
+return function(callback: (char: Model, player: Player) -> (() -> ())?, allowedPlayers: { Player }?)
     local stopObservingPlayers = observePlayers(function(player)
+        if (allowedPlayers) and (not table.find(allowedPlayers, player)) then return; end;
+
         local cleanFunc: (() -> ())?;
 
         if player.Character then

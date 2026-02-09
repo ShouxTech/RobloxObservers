@@ -10,7 +10,7 @@ declare namespace Observers {
     function observeAttribute<T extends AttributeValue>(instance: Instance, attribute: string, callback: (value: T | undefined) => (() => void) | void): () => void;
     function observeState<T>(state: State<T>, callback: (value: T) => void): () => void;
     function observePlayers(callback: (player: Player) => (() => void) | void): () => void;
-    function observeCharacters(callback: (char: Model, player: Player) => (() => void) | void): () => void;
+    function observeCharacters(callback: (char: Model, player: Player, allowedPlayers?: Player[]) => (() => void) | void): () => void;
     function observeAttribute<T extends AttributeValue>(instance: Instance, attribute: string, callback: (value: T | undefined) => (() => void) | void): () => void;
     function observeChildren(instance: Instance, callback: (child: Instance) => (() => void) | void): () => void;
     function observeTag<T extends Instance>(tag: string, callback: (instance: T) => (() => void) | void, ancestors?: Instance[]): () => void;
